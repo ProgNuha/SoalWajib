@@ -1,0 +1,232 @@
+//# SoalWajib
+//soal nomer 1
+
+/*------------------------------------------------------------------------------*/
+/*	File			:	Data Rental ver 3.c										*/
+/*	Deskripsi		:	Membuat aplikasi rental komputer						*/
+/*	Dibuat	Oleh	:	Ilham Cahyahadi Pamungkas / 171511042					*/
+/*			Tgl		:	21/11/17												*/
+/*	Compiler		:	TDM-GCC 4.9.2 32-bit Release							*/
+/*	Changelog		:	-Penambahan fungsi modular								*/
+/*						-Penambahan fitur perhitungan hari berikutnya			*/
+/*						-Penambahan seleksi menu								*/
+/*						-Penambahan fitur jumlah user							*/
+/*------------------------------------------------------------------------------*/
+
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+#include <ctype.h>
+#include <conio.h>
+
+// KAMUS DATA
+	
+int		N, i, j, menu, temp;
+char	besok;
+	
+typedef struct{
+	long int	Jam, Menit, Detik, Durasi;
+} waktu;
+	
+typedef struct{
+	char		*Nama;
+	long int	JumK, Jam, Menit, Detik, Selisih;
+	waktu		Masuk, Keluar;
+	float		TotB;
+} Pengguna;
+
+Pengguna	Dt_Rental[10];
+
+void		Input_Data();
+void		Hitung_Biaya();
+void		Tampilkan_Data();
+void		Print_Data();
+
+int N = 0;
+int i = 0;
+int temp = 0;
+
+int main()
+{	
+	// ALGORITMA
+	printf("= = = = = = = = = = = = = = = = = = = = = = = = = =\n");
+	printf("= = = A P L I K A S I   D A T A   R E N T A L = = =\n");
+	printf("= = = = = = = = = = = = = = = = = = = = = = = = = =\n\n");
+	printf("= = = = = = = = P I L I H   M E N U = = = = = = = =");
+	printf("\t\n1. Input data rental");
+	printf("\t\n2. Tampilkan data rental");
+	printf("\t\n9. Keluar aplikasi");
+	printf("\t\nInput : ");
+	scanf("%i", &menu);
+	system("cls");
+	
+	switch(menu){
+		case 1	:	Input_Data();		break;			// Menginput data pengguna rental
+		case 2	:	Tampilkan_Data();	break;			// Menampilkan data pengguna rental ke layat
+		case 9	:	{
+					printf("Tekan tombol sembarang untuk keluar dari aplikasi....");
+					getch();							// Menunggu user merespon untuk melanjutkan ke proses berikutnya
+					return 0;							// Keluar dari aplikasi
+					break;
+					}
+		//case 0	:	Print_Data();	break;			// Mencetak data pengguna rental menjadi dalam dokumen teks
+		
+		default	:	{
+		printf("Menu yang anda pilih salah !!!\nTekan tombol sembarang untuk melanjutkan!!");
+		getch();										// Menunggu user merespon untuk melanjutkan ke proses berikutnya
+		fflush(stdin);									// Menghapus buffer input dari keyboard
+		system("cls");									// Menghapus tampilan di layar
+		main();											// Kembali ke modul main (Menu utama)
+		break;
+		}
+	}
+	
+}
+
+void Input_Data()
+{
+	//	ALGORITMA
+	
+	/*	Memasukan jumlah data pengguna yang akan di inputkan */
+	while(temp <= N || temp > 10){
+		system("color 07");								// Memberi efek warna
+		printf("\n\tBerapa jumlah user yang akan di input ?\n\t(syarat : %d < user < 10)\n", N);
+		scanf("%d", &temp);
+		if(temp <= N){
+			printf("\n\nERROR! Jumlah user yang di input harus lebih besar dari %d !!\nTekan tombol sembarang untuk melanjutkan!!", N);
+			system("color fc");							// Memberi efek warna
+			fflush(stdin);								// Menghapus buffer input dari keyboard
+			getch();									// Menunggu user merespon untuk melanjutkan ke proses berikutnya
+			system("cls");
+		}else if(temp > 10){
+			printf("\n\nERROR! Jumlah user yang di input harus lebih kecil dari 10 !!\nTekan tombol sembarang untuk melanjutkan!!");
+			system("color fc");							// Memberi efek warna
+			fflush(stdin);								// Menghapus buffer input dari keyboard
+			getch();									// Menunggu user merespon untuk melanjutkan ke proses berikutnya
+			system("cls");
+		}
+	}
+	N = temp;
+	system("cls");
+	
+	/*	Menginputkan data pengguna rental */
+	while(i<N){
+		fflush(stdin);												// Menghapus input yang ada di buffer
+		printf("PENGGUNA NO %i", i+1);
+		printf("\nNama\t: ");
+		Dt_Rental[i].Nama = (char *) malloc(20 * sizeof(char));		// ALOKASI MEMORI
+		gets(Dt_Rental[i].Nama);									// Menginput nama pengguna ke dalam record menggunakan gets
+		
+		/*	Menginputkan kapan pengguna masuk */
+		do{
+			printf("\nMasukan waktu saat anda masuk:\n");
+			printf("Jam\t: ");
+			scanf("%d",&Dt_Rental[i].Masuk.Jam);					// Menginput jam berapa komputer mulai digunakan
+			printf("Menit\t: ");
+			scanf("%d",	&Dt_Rental[i].Masuk.Menit);					// Menginput menit berapa komputer mulai digunakan
+			printf("Detik\t: ");
+			scanf("%d",	&Dt_Rental[i].Masuk.Detik);					// Menginput detik berapa komputer mulai digunakan
+			if((Dt_Rental[i].Masuk.Jam<0) || (Dt_Rental[i].Masuk.Menit<0) || (Dt_Rental[i].Masuk.Detik<0) || (Dt_Rental[i].Masuk.Jam>23)){
+				system("cls");
+				printf("Input yang anda masukan salah !!\n");
+				getch();
+				system("cls");
+			}
+		} while ((Dt_Rental[i].Masuk.Jam<0) || (Dt_Rental[i].Masuk.Menit<0) || (Dt_Rental[i].Masuk.Detik<0) || (Dt_Rental[i].Masuk.Jam>23));
+		
+		Dt_Rental[i].Masuk.Jam		= Dt_Rental[i].Masuk.Jam * 3600;												// Konversi dari jam ke detik
+		Dt_Rental[i].Masuk.Menit	= Dt_Rental[i].Masuk.Menit * 60;												// Konversi dari menit ke detik
+		Dt_Rental[i].Masuk.Durasi	= Dt_Rental[i].Masuk.Jam + Dt_Rental[i].Masuk.Menit + Dt_Rental[i].Masuk.Detik;	// Menjumlah total waktu dalam detik
+		
+		/*	Menginputkan kapan pengguna keluar */
+		do{
+			printf("\nMasukan waktu saat anda Keluar:\n");
+			printf("Jam\t: ");										// Menginput jam berapa komputer selesai digunakan
+			scanf("%d", &Dt_Rental[i].Keluar.Jam);
+			printf("Menit\t: ");									// Menginput menit berapa komputer selesai digunakan
+			scanf("%d",	&Dt_Rental[i].Keluar.Menit);
+			printf("Detik\t: ");									// Menginput detik berapa komputer selesai digunakan
+			scanf("%d",	&Dt_Rental[i].Keluar.Detik);
+			
+			if((Dt_Rental[i].Keluar.Jam<0) || (Dt_Rental[i].Keluar.Menit<0) || (Dt_Rental[i].Keluar.Detik<0) || (Dt_Rental[i].Keluar.Jam>23) || (Dt_Rental[i].Masuk.Jam<Dt_Rental[i].Keluar.Jam)){
+				system("cls");
+				printf("Input yang anda masukan salah !!\n");
+				getch();
+				system("cls");
+			}	
+		} while ((Dt_Rental[i].Keluar.Jam<0) || (Dt_Rental[i].Keluar.Menit<0) || (Dt_Rental[i].Keluar.Detik<0) || (Dt_Rental[i].Keluar.Jam>23) || (Dt_Rental[i].Masuk.Jam<Dt_Rental[i].Keluar.Jam));
+		
+		/*	Menanyakan apakah user keluar pada hari berikutnya */
+		printf("\nApakah user keluar pada hari berikutnya ? Y/N\n");
+		scanf("%s", &besok);
+		if(besok=='Y'){
+			Dt_Rental[i].Keluar.Jam = Dt_Rental[i].Keluar.Jam + 24;
+		}
+		
+		/*	Mengkonversi waktu */
+		Dt_Rental[i].Keluar.Jam		= Dt_Rental[i].Keluar.Jam * 3600;													// Konversi dari jam ke detik
+		Dt_Rental[i].Keluar.Menit	= Dt_Rental[i].Keluar.Menit * 60;													// Konversi dari menit ke detik
+		Dt_Rental[i].Keluar.Durasi	= Dt_Rental[i].Keluar.Jam + Dt_Rental[i].Keluar.Menit + Dt_Rental[i].Keluar.Detik;	// Menjumlah total waktu dalam detik
+		
+		Dt_Rental[i].Selisih	= Dt_Rental[i].Keluar.Durasi - Dt_Rental[i].Masuk.Durasi;	// Menghitung selisih waktu saat komputer selesai digunakan dengan saat komputer mulai digunakan
+		Dt_Rental[i].Jam		= Dt_Rental[i].Selisih/3600;								// Konversi selisih waktu ke dalam jam
+		
+		/*	Input jumlah kertas yang dipakai */
+		printf("\nKertas yang dipakai (lembar)\t: ");
+		scanf("%d",	&Dt_Rental[i].JumK);
+		system("cls");
+		
+		Hitung_Biaya();									// Menuju ke modul Hitung_Biaya (untuk menghitung biaya yg harus dibayar)
+		i++;
+	}
+	
+	main();												// Menuju ke modul main (Menu utama)
+}
+
+void Hitung_Biaya()
+{
+	//	ALGORITMA
+	Dt_Rental[i].TotB		= (((Dt_Rental[i].Selisih%3600)/60)*50) + (Dt_Rental[i].Jam * 3000) + (Dt_Rental[i].JumK * 250);	// Menghitung biaya yang perlu dibayar pengguna
+	if(Dt_Rental[i].TotB > 10000){
+		Dt_Rental[i].TotB	= Dt_Rental[i].TotB - 1000;																			// Memotong harga sebesar 1000 jika biaya yang perlu dibayar lebih dari 10.000
+	}
+}
+
+void Tampilkan_Data()
+{
+	//	ALGORITMA
+	printf("= = = = = = = = = = = = = = = = = = = =\n");
+	printf("= = = L A P O R A N   R E N T A L = = =\n");									// Menampilkan laporan rental
+	printf("= = = = = = = = = = = = = = = = = = = =\n\n");
+	
+	i=0;
+	while(i<N){
+		printf("\t===========================================================");
+		printf("\n\tPENGGUNA NO %i", i+1);
+		printf("\n\tNama\t\t\t\t: %s", Dt_Rental[i].Nama);
+		printf("\n\tLama pemakaian komputer\t\t: ");
+		printf("%d Jam ", 		Dt_Rental[i].Selisih/3600);
+		printf("%d Menit ", 	(Dt_Rental[i].Selisih%3600)/60);
+		printf("%d Detik", 		(Dt_Rental[i].Selisih%3600)%60);
+		printf("\n\tJumlah kertas yang dicetak\t: %d Lembar", Dt_Rental[i].JumK);			// Menampilkan jumlah kertas yang dicetak
+		printf("\n\tJumlah pembayaran\t\t: Rp.%.2lf\n\n", Dt_Rental[i].TotB);				// Menampilkan jumlah biaya yang perlu dibayar oleh pengguna
+		printf("\t===========================================================");
+		i++; 
+	}
+	
+	printf("\n\nTekan tombol sembarang untuk kembali ke menu utama....");
+	getch();
+	system("cls");
+	main();	
+}
+
+void Print_Data()
+{
+	
+}
+
+/* Learn and Lesson
+ kekurangan jika inisialisasi record nama *Nama adalah mengalami crash pada saat akan menampilkan laporan rental, maka harus menggunakan array Nama[20]
+ kekurangan jika inisialisasi record nama menggunakan array Nama[20] adalah tidak bisa menggunakan spasi. jika di beri spasi akan di anggap Nama pengguna selanjutnya
+ kekurangan menggunakan gets adalah saat menginput data adalah pada perulangan ke 2 tidak akan bisa menginput, maka harus ada penambahan fungsi fflush(stdin);
+ */
