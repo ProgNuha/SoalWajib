@@ -1,5 +1,3 @@
-//# ProgramWajib
-
 /*------------------------------------------------------------------------------*/
 /*	File			:	Data Rental ver 3.c										*/
 /*	Deskripsi		:	Membuat aplikasi rental komputer						*/
@@ -10,6 +8,7 @@
 /*						-Penambahan fitur perhitungan hari berikutnya			*/
 /*						-Penambahan seleksi menu								*/
 /*						-Penambahan fitur jumlah user							*/
+/*						-Penambahan seleksi input waktu(jam,menit,detik)		*/
 /*------------------------------------------------------------------------------*/
 
 #include <stdlib.h>
@@ -117,44 +116,66 @@ void Input_Data()
 		gets(Dt_Rental[i].Nama);									// Menginput nama pengguna ke dalam record menggunakan gets
 		
 		/*	Menginputkan kapan pengguna masuk */
-		do{
-			printf("\nMasukan waktu saat anda masuk:\n");
-			printf("Jam\t: ");
-			scanf("%d",&Dt_Rental[i].Masuk.Jam);					// Menginput jam berapa komputer mulai digunakan
-			printf("Menit\t: ");
-			scanf("%d",	&Dt_Rental[i].Masuk.Menit);					// Menginput menit berapa komputer mulai digunakan
-			printf("Detik\t: ");
-			scanf("%d",	&Dt_Rental[i].Masuk.Detik);					// Menginput detik berapa komputer mulai digunakan
-			if((Dt_Rental[i].Masuk.Jam<0) || (Dt_Rental[i].Masuk.Menit<0) || (Dt_Rental[i].Masuk.Detik<0) || (Dt_Rental[i].Masuk.Jam>23)){
-				system("cls");
-				printf("Input yang anda masukan salah !!\n");
-				getch();
-				system("cls");
+		printf("\nMasukan waktu saat anda masuk:\n");
+		printf("Jam\t: ");
+		scanf("%d",&Dt_Rental[i].Masuk.Jam);					// Menginput jam berapa komputer mulai digunakan
+			while (Dt_Rental[i].Masuk.Jam < 0 || Dt_Rental[i].Masuk.Jam > 23)
+			{
+				printf("Jam yang anda inputkan salah!\n");
+				printf("Jam\t: "); scanf("%d", &Dt_Rental[i].Masuk.Jam);
+			}	
+		printf("Menit\t: ");
+		scanf("%d",	&Dt_Rental[i].Masuk.Menit);					// Menginput menit berapa komputer mulai digunakan
+			while (Dt_Rental[i].Masuk.Menit < 0 || Dt_Rental[i].Masuk.Menit > 60)
+			{
+				printf("Menit yang anda inputkan salah!\n");
+				printf("Menit\t: "); scanf("%d", &Dt_Rental[i].Masuk.Menit);	
 			}
-		} while ((Dt_Rental[i].Masuk.Jam<0) || (Dt_Rental[i].Masuk.Menit<0) || (Dt_Rental[i].Masuk.Detik<0) || (Dt_Rental[i].Masuk.Jam>23));
+		printf("Detik\t: ");
+		scanf("%d",	&Dt_Rental[i].Masuk.Detik);					// Menginput detik berapa komputer mulai digunakan
+			while (Dt_Rental[i].Masuk.Detik < 0 || Dt_Rental[i].Masuk.Detik > 60)
+			{
+				printf("Detik yang anda inputkan salah!\n");
+				printf("Detik\t: "); scanf("%d", &Dt_Rental[i].Masuk.Detik);	
+			}			
+				
+		/*	Menginputkan kapan pengguna keluar */
+		printf("\nMasukan waktu saat anda Keluar:\n");
+		printf("Jam\t: ");										// Menginput jam berapa komputer selesai digunakan
+		scanf("%d", &Dt_Rental[i].Keluar.Jam);
+			while (Dt_Rental[i].Keluar.Jam < 0 || Dt_Rental[i].Keluar.Jam > 23)
+			{
+				printf("Jam yang anda inputkan salah!\n");
+				printf("Jam\t: "); scanf("%d", &Dt_Rental[i].Keluar.Jam);
+			}		
+		printf("Menit\t: ");									// Menginput menit berapa komputer selesai digunakan
+		scanf("%d",	&Dt_Rental[i].Keluar.Menit);
+			while (Dt_Rental[i].Keluar.Menit < 0 || Dt_Rental[i].Keluar.Menit > 60)
+			{
+				printf("Menit yang anda inputkan salah!\n");
+				printf("Menit\t: "); scanf("%d", &Dt_Rental[i].Keluar.Menit);
+			}		
+		printf("Detik\t: ");									// Menginput detik berapa komputer selesai digunakan
+		scanf("%d",	&Dt_Rental[i].Keluar.Detik);
+			while (Dt_Rental[i].Keluar.Detik < 0 || Dt_Rental[i].Keluar.Detik > 60)
+			{
+				printf("Detik yang anda inputkan salah!\n");
+				printf("Detik\t: "); scanf("%d", &Dt_Rental[i].Keluar.Detik);
+			}			
+		system("cls");
+		printf("\nWaktu saat anda masuk:\n");
+		printf("Jam\t: %d\n", Dt_Rental[i].Masuk.Jam);
+		printf("Menit\t: %d\n", Dt_Rental[i].Masuk.Menit);
+		printf("Detik\t: %d\n", Dt_Rental[i].Masuk.Detik);
+		printf("\nWaktu saat anda Keluar:\n");
+		printf("Jam\t: %d\n", Dt_Rental[i].Keluar.Jam);
+		printf("Menit\t: %d\n", Dt_Rental[i].Keluar.Menit);
+		printf("Detik\t: %d\n", Dt_Rental[i].Keluar.Detik);
 		
 		Dt_Rental[i].Masuk.Jam		= Dt_Rental[i].Masuk.Jam * 3600;												// Konversi dari jam ke detik
 		Dt_Rental[i].Masuk.Menit	= Dt_Rental[i].Masuk.Menit * 60;												// Konversi dari menit ke detik
 		Dt_Rental[i].Masuk.Durasi	= Dt_Rental[i].Masuk.Jam + Dt_Rental[i].Masuk.Menit + Dt_Rental[i].Masuk.Detik;	// Menjumlah total waktu dalam detik
-		
-		/*	Menginputkan kapan pengguna keluar */
-		do{
-			printf("\nMasukan waktu saat anda Keluar:\n");
-			printf("Jam\t: ");										// Menginput jam berapa komputer selesai digunakan
-			scanf("%d", &Dt_Rental[i].Keluar.Jam);
-			printf("Menit\t: ");									// Menginput menit berapa komputer selesai digunakan
-			scanf("%d",	&Dt_Rental[i].Keluar.Menit);
-			printf("Detik\t: ");									// Menginput detik berapa komputer selesai digunakan
-			scanf("%d",	&Dt_Rental[i].Keluar.Detik);
 			
-			if((Dt_Rental[i].Keluar.Jam<0) || (Dt_Rental[i].Keluar.Menit<0) || (Dt_Rental[i].Keluar.Detik<0) || (Dt_Rental[i].Keluar.Jam>23) || (Dt_Rental[i].Masuk.Jam<Dt_Rental[i].Keluar.Jam)){
-				system("cls");
-				printf("Input yang anda masukan salah !!\n");
-				getch();
-				system("cls");
-			}	
-		} while ((Dt_Rental[i].Keluar.Jam<0) || (Dt_Rental[i].Keluar.Menit<0) || (Dt_Rental[i].Keluar.Detik<0) || (Dt_Rental[i].Keluar.Jam>23) || (Dt_Rental[i].Masuk.Jam<Dt_Rental[i].Keluar.Jam));
-		
 		/*	Menanyakan apakah user keluar pada hari berikutnya */
 		printf("\nApakah user keluar pada hari berikutnya ? Y/N\n");
 		scanf("%s", &besok);
